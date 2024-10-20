@@ -6,7 +6,7 @@ import rclpy
 import math
 import numpy as np
 from argparse import ArgumentParser
-from rclpy.time import CONVERSION_CONSTANT
+from rclpy.time import S_TO_NS
 from sensor_msgs.msg import NavSatFix, NavSatStatus
 
 
@@ -16,7 +16,7 @@ class CircularTranslate():
     def update(self, t, fix):
         r = 0.001
         circle_period = 10.0
-        t_sec = t.nanoseconds / CONVERSION_CONSTANT
+        t_sec = t.nanoseconds / S_TO_NS
         phi = math.tau * (t_sec / circle_period)
         fix.latitude += math.cos(phi) * r
         fix.longitude += math.sin(phi) * r
@@ -40,7 +40,7 @@ class LooseFix():
         self.period = period
 
     def update(self, t, fix):
-        t_sec = t.nanoseconds / CONVERSION_CONSTANT
+        t_sec = t.nanoseconds / S_TO_NS
         phase_0_to_1 = math.fmod(t_sec, self.period) / self.period
         if phase_0_to_1 < self.phase:
             fix.status.status = NavSatStatus.STATUS_NO_FIX
